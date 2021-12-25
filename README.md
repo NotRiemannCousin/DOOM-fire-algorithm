@@ -1,8 +1,7 @@
 # DOOM-fire-algorithm
 Implementation of the DOOM game fire algorithm (without the wind) in the __C++ SFML library__
 
-<iframe src="https://www.youtube.com/embed/VNcEp07wUAY">
-<\iframe>
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/VNcEp07wUAY/0.jpg)](https://www.youtube.com/watch?v=VNcEp07wUAY)
 
 *Demonstration of the algorithm*
 
