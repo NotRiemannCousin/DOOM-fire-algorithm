@@ -9,7 +9,7 @@ class Button
 	Text text;
 	RectangleShape box;
 
-	Button(Font &font, char *str, int sizeChar, Vector2f pos, float size) : text(str, font, sizeChar), box(Vector2f(sizeChar * size * 0.912, sizeChar * 1.26))
+	Button(Font &font, const char *str, int sizeChar, Vector2f pos, float size) : text(str, font, sizeChar), box(Vector2f(sizeChar * size * 0.912, sizeChar * 1.26))
 	{
 		text.setPosition(pos.x - (text.getGlobalBounds().left + text.getGlobalBounds().width / 2 - (sizeChar * 0.912 * size / 2)), pos.y);
 		text.setFillColor(Color::Black);

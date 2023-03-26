@@ -2,6 +2,7 @@
 #include "Button.h"
 #include <stdlib.h>
 #include <unistd.h>
+// #pragma warning(disable : Wwrite-strings)
 
 using namespace sf;
 
@@ -25,17 +26,17 @@ int main()
 		return EXIT_FAILURE;
 	}
 
-	Text fi("fire intensive: " + std::to_string(fireIntesity), font, 38);
-	fi.setFillColor(Color::Black);
-	fi.setOutlineColor(Color::Black);
+	Text statusFire("fire intensive: " + std::to_string(fireIntesity), font, 38);
+	statusFire.setFillColor(Color::Black);
+	statusFire.setOutlineColor(Color::Black);
 	//	fi.setOutlineThickness(6);
-	fi.setPosition(30, 600);
+	statusFire.setPosition(30, 30);
 
-	Button plusBtn(font, ("+"), 70, Vector2f(centerPos.x - 35 * 0.912 * 1.5 + (gridCount + 4) * .5f, centerPos.y - 100), 1.5);
-	Button minusBtn(font, ("-"), 70, Vector2f(centerPos.x - 35 * 0.912 * 1.5 - (gridCount + 4) * .5f, centerPos.y - 100), 1.5);
+	Button plusBtn(font, "+", 70, Vector2f(centerPos.x + gridSize * .5f, centerPos.y - 100), 1.5);
+	Button minusBtn(font, "-", 70, Vector2f(centerPos.x - gridSize * .5f, centerPos.y - 100), 1.5);
 
-	Button maxBtn(font, ("++"), 70, Vector2f(centerPos.x - 35 * 0.912 * 1.5 + (gridCount + 4) * .5f, centerPos.y + 100), 1.5);
-	Button minBtn(font, ("--"), 70, Vector2f(centerPos.x - 35 * 0.912 * 1.5 - (gridCount + 4) * .5f, centerPos.y + 100), 1.5);
+	Button maxBtn(font, "++", 70, Vector2f(centerPos.x + gridSize * .5f, centerPos.y + 100), 1.5);
+	Button minBtn(font, "--", 70, Vector2f(centerPos.x - gridSize * .5f, centerPos.y + 100), 1.5);
 
 	fireIntesity = fireSize - 1;
 	srand(13);
@@ -101,7 +102,7 @@ int main()
 			}
 		}
 
-		fi.setString("fire intensive: " + std::to_string(fireIntesity));
+		statusFire.setString("fire intensive: " + std::to_string(fireIntesity));
 
 		for (int j = 0; j < gridCount; j++)
 		{
@@ -128,14 +129,32 @@ int main()
 				grid[j][i].setFillColor(colorArray[fire[j][i]]);
 			}
 		}
+		window.clear(Color(10, 50, 70));
+
+		for (int i = 0; i < gridCount; i++)
+			for (int j = 0; j < gridCount; j++)
+				window.draw(grid[j][i]);
+
+#pragma region Rendering
+		window.draw(statusFire);
+
+		plusBtn.draw(window);
+		minusBtn.draw(window);
+		maxBtn.draw(window);
+		minBtn.draw(window);
+
+		window.display();
+#pragma endregion
+
+		usleep(20000);
 	}
 }
 
 RectangleShape Grid(int indexX, int indexY)
 {
 	RectangleShape cell;
-	static Vector2f posGrid = Vector2f(centerPos.x + -(gridCount) / 2,
-									   centerPos.y + -(gridCount) / 2);
+	static Vector2f posGrid = Vector2f(centerPos.x + -gridSize / 2,
+									   centerPos.y + -gridSize / 2);
 
 	cell.setSize(Vector2f(cellSize, cellSize));
 	cell.setOutlineColor(Color(27, 27, 27));
