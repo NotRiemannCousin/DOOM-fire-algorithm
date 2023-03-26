@@ -1,5 +1,6 @@
 #pragma once 
 #include <SFML/Graphics.hpp>
+#include <functional>
 using namespace sf;
 
 class Button
@@ -19,13 +20,14 @@ class Button
 		box.setOutlineThickness(10);
 	};
 
-	void click(Touch touch, void action())
+	template<class ...Types>
+	void click(Touch touch, void (*action)(Types... params), Types... args)
 	{
 		for (int i = 0; i < 5; i++)
 		{
 			if (box.getGlobalBounds().contains(Vector2f (touch.getPosition(i))))
 			{
-				action();
+				action(args...);
 				break;
 			}
 		}

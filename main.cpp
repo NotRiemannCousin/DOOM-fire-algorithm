@@ -7,7 +7,7 @@ using namespace sf;
 
 int screenSizeX = 1080, screenSizeY = 2340;
 int fireSize = 37, gridSize = 40, cellSize = 20;
-int fireIntesive;
+int fireIntesive = 0;
 
 RectangleShape Grid(int indexX, int indexY);
 
@@ -26,8 +26,11 @@ int main()
 //	fi.setOutlineThickness(6);
 	fi.setPosition(30, 600);
 
-	Button plus(font, ("+"), 70, Vector2f(screenSizeX / 2 - 35 * 0.912 * 1.5 + 250, screenSizeY / 2 + 500), 1.5);
-	Button minus(font, ("-"), 70, Vector2f(screenSizeX / 2 - 35 * 0.912 * 1.5 - 250, screenSizeY / 2 + 500), 1.5);
+	Button plusBtn(font, ("+"), 70, Vector2f(screenSizeX / 2 - 35 * 0.912 * 1.5 + 250, screenSizeY / 2 + 500), 1.5);
+	Button minusBtn(font, ("-"), 70, Vector2f(screenSizeX / 2 - 35 * 0.912 * 1.5 - 250, screenSizeY / 2 + 500), 1.5);
+
+	Button maxBtn(font, ("++"), 70, Vector2f(screenSizeX / 2 - 35 * 0.912 * 1.5 + 250, screenSizeY / 2 + 600), 1.5);
+	Button minBtn(font, ("--"), 70, Vector2f(screenSizeX / 2 - 35 * 0.912 * 1.5 - 250, screenSizeY / 2 + 600), 1.5);
 
 	fireIntesive = fireSize - 1;
 	srand(13);
@@ -76,14 +79,19 @@ int main()
 
 			case Event::TouchBegan:
 
-				plus.click(Touch(), []() {
+				plusBtn.click(Touch(), +[]() {
 					if (fireIntesive < 36)
 						fireIntesive++;
 				});
-
-				minus.click(Touch(), []() {
+				minusBtn.click(Touch(), +[]() {
 					if (fireIntesive > 0)
 						fireIntesive--;
+				});
+				maxBtn.click(Touch(), +[](){
+					fireIntesive = 36;
+				});
+				minBtn.click(Touch(), +[](){
+					fireIntesive = 0;
 				});
 				break;
 			}
@@ -131,8 +139,10 @@ int main()
 		}
 		window.draw(fi);
 
-		plus.draw(window);
-		minus.draw(window);
+		plusBtn.draw(window);
+		minusBtn.draw(window);
+		maxBtn.draw(window);
+		minBtn.draw(window);
 
 		window.display();
 		usleep(20000);
