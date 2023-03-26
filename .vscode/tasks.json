@@ -9,7 +9,13 @@
                 "-g",
                 "${file}",
                 "-o",
-                "${fileDirname}\\${fileBasenameNoExtension}.exe"
+                "${fileDirname}\\${fileBasenameNoExtension}.exe",
+                "-lsfml-graphics",
+                "-lsfml-window",
+                "-lsfml-system",
+                "-lopengl32",
+                "-lwinmm",
+                "-lgdi32"
             ],
             "options": {
                 "cwd": "C:/msys64/mingw64/bin"

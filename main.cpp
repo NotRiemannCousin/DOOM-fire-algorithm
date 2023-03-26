@@ -5,37 +5,42 @@
 
 using namespace sf;
 
-int screenSizeX = 1080, screenSizeY = 2340;
-int fireSize = 37, gridSize = 40, cellSize = 20;
-int fireIntesive = 0;
+#pragma region Global Variables
+int fireSize = 37, gridCount = 40, cellSize = 20,
+	gridSize = gridCount * cellSize;
+int fireIntesity = 0;
+Vector2i screenSize = Vector2i(VideoMode::getDesktopMode().width,
+							   VideoMode::getDesktopMode().height);
+Vector2f centerPos = Vector2f(screenSize.x / 2, screenSize.y / 2);
+#pragma endregion
 
 RectangleShape Grid(int indexX, int indexY);
 
 int main()
 {
 	Font font;
-	if (!font.loadFromFile("/storage/emulated/0/my-project/src/arialceb.ttf"))
+	if (!font.loadFromFile("C:/Users/MARCE/OneDrive/Documentos/C++/REPO/DOOM-fire-algorithm/arialceb.ttf"))
 	{
 		fprintf(stderr, "Couldn't load font\n");
 		return EXIT_FAILURE;
 	}
 
-	Text fi("fire intensive: " + std::to_string(fireIntesive), font, 38);
-	fi.setColor(Color::Black);
+	Text fi("fire intensive: " + std::to_string(fireIntesity), font, 38);
+	fi.setFillColor(Color::Black);
 	fi.setOutlineColor(Color::Black);
-//	fi.setOutlineThickness(6);
+	//	fi.setOutlineThickness(6);
 	fi.setPosition(30, 600);
 
-	Button plusBtn(font, ("+"), 70, Vector2f(screenSizeX / 2 - 35 * 0.912 * 1.5 + 250, screenSizeY / 2 + 500), 1.5);
-	Button minusBtn(font, ("-"), 70, Vector2f(screenSizeX / 2 - 35 * 0.912 * 1.5 - 250, screenSizeY / 2 + 500), 1.5);
+	Button plusBtn(font, ("+"), 70, Vector2f(centerPos.x - 35 * 0.912 * 1.5 + (gridCount + 4) * .5f, centerPos.y - 100), 1.5);
+	Button minusBtn(font, ("-"), 70, Vector2f(centerPos.x - 35 * 0.912 * 1.5 - (gridCount + 4) * .5f, centerPos.y - 100), 1.5);
 
-	Button maxBtn(font, ("++"), 70, Vector2f(screenSizeX / 2 - 35 * 0.912 * 1.5 + 250, screenSizeY / 2 + 600), 1.5);
-	Button minBtn(font, ("--"), 70, Vector2f(screenSizeX / 2 - 35 * 0.912 * 1.5 - 250, screenSizeY / 2 + 600), 1.5);
+	Button maxBtn(font, ("++"), 70, Vector2f(centerPos.x - 35 * 0.912 * 1.5 + (gridCount + 4) * .5f, centerPos.y + 100), 1.5);
+	Button minBtn(font, ("--"), 70, Vector2f(centerPos.x - 35 * 0.912 * 1.5 - (gridCount + 4) * .5f, centerPos.y + 100), 1.5);
 
-	fireIntesive = fireSize - 1;
+	fireIntesity = fireSize - 1;
 	srand(13);
 
-	RenderWindow window(VideoMode(screenSizeX, screenSizeY), "sfml");
+	RenderWindow window(sf::VideoMode::getDesktopMode(), "sfml", Style::Fullscreen);
 	window.setFramerateLimit(60);
 
 	Color colorArray[37] = {
@@ -52,19 +57,16 @@ int main()
 		sf::Color(183, 175, 47), sf::Color(183, 183, 47), sf::Color(183, 183, 55),
 		sf::Color(207, 207, 111), sf::Color(223, 223, 159), sf::Color(239, 239, 199),
 		sf::Color(255, 255, 255)};
-		
-	RectangleShape grid[gridSize][gridSize];
-	int fire[gridSize][gridSize];
 
-	for (int i = 0; i < gridSize; i++)
-	{
-		for (int j = 0; j < gridSize; j++)
+	RectangleShape grid[gridCount][gridCount];
+	int fire[gridCount][gridCount];
+
+	for (int i = 0; i < gridCount; i++)
+		for (int j = 0; j < gridCount; j++)
 		{
 			grid[i][j] = Grid(i, j);
-
-			fire[i][j] = fireIntesive;
+			fire[i][j] = fireIntesity;
 		}
-	}
 
 	while (window.isOpen())
 	{
@@ -77,86 +79,69 @@ int main()
 				window.close();
 				break;
 
-			case Event::TouchBegan:
+			case sf::Event::MouseButtonPressed:
 
-				plusBtn.click(Touch(), +[]() {
-					if (fireIntesive < 36)
-						fireIntesive++;
-				});
-				minusBtn.click(Touch(), +[]() {
-					if (fireIntesive > 0)
-						fireIntesive--;
-				});
-				maxBtn.click(Touch(), +[](){
-					fireIntesive = 36;
-				});
-				minBtn.click(Touch(), +[](){
-					fireIntesive = 0;
-				});
+				plusBtn.click(
+					e.mouseButton, +[]()
+								   {
+					if (fireIntesity < 36)
+						fireIntesity++; });
+				minusBtn.click(
+					e.mouseButton, +[]()
+								   {
+					if (fireIntesity > 0)
+						fireIntesity--; });
+				maxBtn.click(
+					e.mouseButton, +[]()
+								   { fireIntesity = 36; });
+				minBtn.click(
+					e.mouseButton, +[]()
+								   { fireIntesity = 0; });
 				break;
 			}
 		}
 
-		fi.setString("fire intensive: " + std::to_string(fireIntesive));
+		fi.setString("fire intensive: " + std::to_string(fireIntesity));
 
-		for (int j = 0; j < gridSize; j++)
+		for (int j = 0; j < gridCount; j++)
 		{
-			for (int i = 0; i < gridSize; i++)
+			for (int i = 0; i < gridCount; i++)
 			{
 				int decay = rand() % 4;
 
-				if (i != gridSize - 1)
+				if (i != gridCount - 1)
 				{
 					fire[j][i] = fire[j][i + 1] - decay;
 				}
 				else
 				{
-					fire[j][i] = fireIntesive;
+					fire[j][i] = fireIntesity;
 				}
-				if (fire[j][i] < 0)
-				{
-					fire[j][i] = 0;
-				}
+				fire[j][i] = std::max(0, fire[j][i]);
 
 				int k = j - decay;
 				if (k < 0)
 				{
-					k = gridSize - 1 + k;
+					k = gridCount - 1 + k;
 				}
 				grid[j][i].setFillColor(colorArray[0]);
 				grid[j][i].setFillColor(colorArray[fire[j][i]]);
 			}
 		}
-
-		window.clear(Color(10, 50, 70));
-
-		for (int i = 0; i < gridSize; i++)
-		{
-			for (int j = 0; j < gridSize; j++)
-			{
-				window.draw(grid[j][i]);
-			}
-		}
-		window.draw(fi);
-
-		plusBtn.draw(window);
-		minusBtn.draw(window);
-		maxBtn.draw(window);
-		minBtn.draw(window);
-
-		window.display();
-		usleep(20000);
 	}
 }
 
 RectangleShape Grid(int indexX, int indexY)
 {
 	RectangleShape cell;
+	static Vector2f posGrid = Vector2f(centerPos.x + -(gridCount) / 2,
+									   centerPos.y + -(gridCount) / 2);
 
 	cell.setSize(Vector2f(cellSize, cellSize));
 	cell.setOutlineColor(Color(27, 27, 27));
 	cell.setFillColor(Color(20, 20, 20));
-	cell.setPosition(Vector2f(screenSizeX / 2 + cellSize * indexX - (gridSize * cellSize) / 2, screenSizeY / 2 + cellSize * indexY - (gridSize * cellSize) / 2));
+	cell.setPosition(Vector2f(posGrid.x + cellSize * indexX,
+							  posGrid.y + cellSize * indexY));
 
 	return cell;
 }

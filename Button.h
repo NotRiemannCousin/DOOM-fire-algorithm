@@ -20,12 +20,12 @@ class Button
 		box.setOutlineThickness(10);
 	};
 
-	template<class ...Types>
-	void click(Touch touch, void (*action)(Types... params), Types... args)
+	template<class Input, class ...Types>
+	void click(Input input, void (*action)(Types... params), Types... args)
 	{
 		for (int i = 0; i < 5; i++)
 		{
-			if (box.getGlobalBounds().contains(Vector2f (touch.getPosition(i))))
+			if (box.getGlobalBounds().contains(Vector2f (input.x, input.y)))
 			{
 				action(args...);
 				break;
